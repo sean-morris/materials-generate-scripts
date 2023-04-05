@@ -17,8 +17,8 @@ for root, dirs, files in os.walk(ORIGINAL_MATERIALS_REPO_PATH, topdown=False):
                 data = json.load(f)
                 imp = data["cells"][0]["source"]
                 if "otter" in "".join(imp):
-                    imp.insert(0, f"%pip install otter-grader=={OTTER_GRADER_VERSION}\n")
-                    imp.insert(1, "%pip install datascience\n")
+                    imp.insert(0, f"%pip install -q otter-grader=={OTTER_GRADER_VERSION}\n")
+                    imp.insert(1, "%pip install -q datascience\n")
                     print(imp)
                     # Serializing json
                     json_object = json.dumps(data, indent=1)
