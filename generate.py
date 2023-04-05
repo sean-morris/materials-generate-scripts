@@ -7,6 +7,7 @@ ORIGINAL_MATERIALS_REPO_PATH=f"{PARENT_PATH}/{ORIGINAL_MATERIALS_REPO}"
 COLAB_COPY_PATH=f"{PARENT_PATH}/{ORIGINAL_MATERIALS_REPO}-colab"
 BINDER_COPY_PATH=f"{PARENT_PATH}/{ORIGINAL_MATERIALS_REPO}-binder"
 JUPYTERLITE_COPY_PATH=f"{PARENT_PATH}/{ORIGINAL_MATERIALS_REPO}-jl"
+OTTER_GRADER_VERSION="4.3.1"
 
 for root, dirs, files in os.walk(ORIGINAL_MATERIALS_REPO_PATH, topdown=False):
     for name in files:
@@ -16,7 +17,7 @@ for root, dirs, files in os.walk(ORIGINAL_MATERIALS_REPO_PATH, topdown=False):
                 data = json.load(f)
                 imp = data["cells"][0]["source"]
                 if "otter" in "".join(imp):
-                    imp.insert(0, "%pip install otter-grader\n")
+                    imp.insert(0, f"%pip install otter-grader=={OTTER_GRADER_VERSION}\n")
                     imp.insert(1, "%pip install datascience\n")
                     print(imp)
                     # Serializing json
