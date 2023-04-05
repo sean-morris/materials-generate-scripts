@@ -17,12 +17,13 @@ for root, dirs, files in os.walk(ORIGINAL_MATERIALS_REPO_PATH, topdown=False):
                 imp = data["cells"][0]["source"]
                 if "otter" in "".join(imp):
                     imp.insert(0, "%pip install otter-grader\n")
+                    imp.insert(1, "%pip install datascience\n")
                     print(imp)
                     # Serializing json
                     json_object = json.dumps(data, indent=1)
                 
                     #Writing to sample.json
-                    with open("./sample.json", "w") as outfile:
+                    with open(name, "w") as outfile:
                         outfile.write(json_object)
             break
     break
