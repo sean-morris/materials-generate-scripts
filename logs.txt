@@ -1,0 +1,37 @@
+Logs for 88e-labs at labConverted: lab/lab03/lab03.ipynb 
+Converted: lab/lab04/lab04_old.ipynb 
+Converted: lab/lab04/lab04.ipynb 
+Converted: lab/lab02/lab02_old.ipynb 
+Converted: lab/lab02/lab02.ipynb 
+Converted: lab/lab10/lab10.ipynb 
+Converted: lab/lab08-old/lab08_old.ipynb 
+ERROR at lab/lab08-old/lab08.ipynb:
+Traceback (most recent call last): 
+  File "/usr/local/Cellar/python@3.10/3.10.8/Frameworks/Python.framework/Versions/3.10/lib/python3.10/runpy.py", line 196, in _run_module_as_main 
+    return _run_code(code, main_globals, None, 
+  File "/usr/local/Cellar/python@3.10/3.10.8/Frameworks/Python.framework/Versions/3.10/lib/python3.10/runpy.py", line 86, in _run_code 
+    exec(code, run_globals) 
+  File "/Users/sean/Documents/cb/materials-generate-scripts/venv/lib/python3.10/site-packages/otter/assign/v0/convert/__main__.py", line 27, in <module> 
+    main() 
+  File "/Users/sean/Documents/cb/materials-generate-scripts/venv/lib/python3.10/site-packages/click/core.py", line 1130, in __call__ 
+    return self.main(*args, **kwargs) 
+  File "/Users/sean/Documents/cb/materials-generate-scripts/venv/lib/python3.10/site-packages/click/core.py", line 1055, in main 
+    rv = self.invoke(ctx) 
+  File "/Users/sean/Documents/cb/materials-generate-scripts/venv/lib/python3.10/site-packages/click/core.py", line 1404, in invoke 
+    return ctx.invoke(self.callback, **ctx.params) 
+  File "/Users/sean/Documents/cb/materials-generate-scripts/venv/lib/python3.10/site-packages/click/core.py", line 760, in invoke 
+    return __callback(*args, **kwargs) 
+  File "/Users/sean/Documents/cb/materials-generate-scripts/venv/lib/python3.10/site-packages/otter/assign/v0/convert/__main__.py", line 20, in main 
+    cells = get_transformed_cells(nb["cells"]) 
+  File "/Users/sean/Documents/cb/materials-generate-scripts/venv/lib/python3.10/site-packages/otter/assign/v0/convert/notebook_transformer.py", line 173, in get_transformed_cells 
+    assert not is_test_cell(cell), f"Test outside of a question: {cell}" 
+AssertionError: Test outside of a question: {'cell_type': 'code', 'execution_count': 14, 'metadata': {}, 'outputs': [{'data': {'text/plain': 'True'}, 'execution_count': 14, 'metadata': {}, 'output_type': 'execute_result'}], 'source': '## Test ##\ntype(q4) == str and len(q4) > 5'} 
+Converted: lab/lab03-old/lab03.ipynb 
+Converted: lab/lab03-old/lab03_old.ipynb 
+Converted: lab/lab07/lab07.ipynb 
+Converted: lab/lab09/lab09.ipynb 
+Converted: lab/lab08/lab08.ipynb 
+Converted: lab/lab01/lab01.ipynb 
+Converted: lab/lab01/lab01_old.ipynb 
+Converted: lab/lab06/lab06.ipynb 
+Converted: lab/lab06/lab06_old.ipynb 
