@@ -3,6 +3,8 @@ These scripts generate materials for various platforms: JupyterHub, Colab, Jupyt
 Their will be notebooks with the footprint and without for all the environments
 A notebook with no footprint means that we are loading all external files(csv, png, etc) from a URL.
 
+**Conversion of otterized notebooks from (otter-3)v0 to (otter-4)v1: convert.py**
+
 # Executing at once
 `sh ./main.sh` runs all the steps necessary to create the various types of notebooks
 
