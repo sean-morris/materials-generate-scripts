@@ -21,7 +21,7 @@ def change_colab_assignment_config(root_path, file):
     return file_path
 
 
-def assign(root_path, file, pdfs):
+def assign(root_path, file, pdfs, footprint):
     file_path = os.path.join(root_path, file)
     if pdfs:
         assign_args = ["otter", "assign", "-v", file_path, root_path]
@@ -32,9 +32,9 @@ def assign(root_path, file, pdfs):
     err = (otter_assign_out.stderr).decode("utf-8")
     msg = "All autograder tests passed"
     if msg in out or msg in err:
-        print(f"Tests Passed: {file}")
+        print(f"Colab {footprint}: Tests Passed: {file}")
     else:
-        print(f"Tests NOT Passed: {file}")
+        print(f"Colab {footprint}: Tests NOT Passed: {file}")
         print(err)
 
 
@@ -47,17 +47,20 @@ def colab_first_cell(root_path, file, args):
     otter_version = args.otter_version
     data_8_repo_url = args.data_8_repo_url
     materials_repo = args.materials_repo
+    if args.local_notebooks_folder == "notebooks_no_footprint":
+        materials_repo = f"{materials_repo}-no-footprint"
 
     file_path = os.path.join(root_path, file)
-    rel_path = "/".join(file_path.split("/")[7:-1])
+    rel_path = "/".join(file_path.split("/")[7:-2])
     insert_headers = []
-    clone_repo_path = f"{data_8_repo_url}/{materials_repo}-colab"
-    notebook_path = f"{materials_repo}-colab/{rel_path}"
+    clone_repo_path = f"{data_8_repo_url}/{materials_repo}"
+    notebook_path = f"{materials_repo}/{rel_path}"
+
     with open("colab-header.txt", "r") as f:
         for line in f:
             line = line.replace("||OTTER_GRADER_VERSION||", otter_version)
             line = line.replace("||CLONE_REPO_PATH||", clone_repo_path)
-            line = line.replace("||ORIGINAL_MATERIALS_REPO||", f"{materials_repo}-colab")
+            line = line.replace("||ORIGINAL_MATERIALS_REPO||", f"{materials_repo}")
             line = line.replace("||NOTEBOOK_DIR||", notebook_path)
             insert_headers.append(line)
     process_ipynb(file_path, insert_headers)
@@ -72,7 +75,7 @@ def convert_raw_to_colab_raw(args, is_test):
                     new_file_path = root.replace(parent_path, args.output_folder)
                     create_colab_raw_dir(root, new_file_path)
                     change_colab_assignment_config(new_file_path, file)  # adds runs_on
-                    assign(new_file_path, file, args.pdfs)
+                    assign(new_file_path, file, args.pdfs, args.local_notebooks_folder)
                     colab_first_cell(f"{new_file_path}/student", file, args)
                     colab_first_cell(f"{new_file_path}/autograder", file, args)
                     remove_otter_assign_output(new_file_path)
@@ -83,7 +86,7 @@ if __name__ == "__main__":
     parser.add_argument('local_notebooks_folder', metavar='p', type=str, help='notebooks or notebooks_no_footprint')
     parser.add_argument('otter_version', metavar='p', type=str, help='4.3.4')
     parser.add_argument('data_8_repo_url', metavar='p', type=str, help='https://github.com/data-8')
-    parser.add_argument('materials_repo', metavar='p', type=str, help='materials-sp22')
+    parser.add_argument('materials_repo', metavar='p', type=str, help='materials-sp22-colab')
     parser.add_argument('--is_test', metavar='it', type=bool, help='if testing do one notebook', default=False, action=argparse.BooleanOptionalAction)
     args, unknown = parser.parse_known_args()
     output_folder = f"{args.local_notebooks_folder}_colab"

@@ -55,3 +55,4 @@ if __name__ == "__main__":
     if os.path.exists(end_path):
         shutil.rmtree(end_path)
     jupyterlite(args.local_notebooks_folder, args.otter_version, args.is_test)
+    print(f"JupyterLite: {args.local_notebooks_folder} Created")

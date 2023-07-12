@@ -76,3 +76,4 @@ if __name__ == "__main__":
     parser.add_argument('public_url', metavar='p', type=str, help='https://ds-modules.github.io/materials-sp22-assets')
     args, unknown = parser.parse_known_args()
     provide_url_in_notebook(args.local_notebooks_folder, args.public_url)
+    print(f"Notebooks no footprint -- All files access public url {args.public_url}")

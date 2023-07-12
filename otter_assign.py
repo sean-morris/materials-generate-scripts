@@ -17,23 +17,19 @@ def assign(local_notebooks_folder, is_test):
                     err = (otter_assign_out.stderr).decode("utf-8")
                     msg = "All autograder tests passed"
                     if msg in out or msg in err:
-                        print(f"Tests Passed: {file}")
+                        print(f"Hub: {local_notebooks_folder}: Tests Passed: {file}")
                     else:
-                        print(f"Tests NOT Passed: {file}")
+                        print(f"Hub: {local_notebooks_folder}: Tests NOT Passed: {file}")
                         with open(f"{os.getcwd()}/otter_assign_log_{local_notebooks_folder}.txt", "a") as f:
                             f.write(err)
                     remove_otter_assign_output(dir_path)
 
 
-FOLDER_NAME = "notebooks_assign"
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run otter assign on folder of notebooks')
-    parser.add_argument('local_notebooks_folder', metavar='p', type=str, help='rnotebooks_no_footprint')
+    parser.add_argument('local_notebooks_folder', metavar='p', type=str, help='notebooks_no_footprint')
     parser.add_argument('--is_test', metavar='it', type=bool, help='if testing do one notebook', default=False, action=argparse.BooleanOptionalAction)
     args, unknown = parser.parse_known_args()
-    end_path = f"{os.getcwd()}/{FOLDER_NAME}/"
-    if os.path.exists(end_path):
-        shutil.rmtree(end_path)
     log_path = f"{os.getcwd()}/otter_assign_log_{args.local_notebooks_folder}.txt"
     if os.path.exists(log_path):
         os.remove(log_path)

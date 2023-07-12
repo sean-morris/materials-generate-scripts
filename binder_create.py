@@ -25,7 +25,7 @@ def binderize(notebooks_assign, otter_version, is_test):
                         f"%pip install -q otter-grader=={otter_version}\n",
                         "%pip install -q datascience\n"
                     ]
-                    process_ipynb(file_path, insert_headers)
+                    process_ipynb(copy_to_file, insert_headers)
 
 
 if __name__ == "__main__":
@@ -39,3 +39,4 @@ if __name__ == "__main__":
     if os.path.exists(end_path):
         shutil.rmtree(end_path)
     binderize(args.local_notebooks_folder, args.otter_version, args.is_test)
+    print(f"Binder: {args.local_notebooks_folder} Created")

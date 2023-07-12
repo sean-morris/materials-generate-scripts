@@ -12,7 +12,7 @@ A notebook with no footprint means that we are loading all external files(csv, p
 
 # Steps
 ## First Steps
-1) Copy raw/original notebooks from materials-xxx-private to this repo into the folder notebooks
+1) Copy raw/original notebooks from materials-xxx-private to this repo into the folder: _notebooks_raw
 
 ## Handle Colab with Footprint
 2) **Execute:** `python3 colab_notebooks.py notebooks 4.3.4 https://github.com/data-8 materials-sp22`
