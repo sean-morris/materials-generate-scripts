@@ -2,7 +2,7 @@ import os
 import json
 import shutil
 from subprocess import run
-from util import process_ipynb, remove_otter_assign_output
+from util import process_ipynb, remove_otter_assign_output, strip_unnecessary_keys
 import argparse
 
 
@@ -21,17 +21,23 @@ def change_colab_assignment_config(root_path, file):
     return file_path
 
 
-def assign(root_path, file, pdfs, footprint):
+def assign(root_path, file, pdfs, footprint, run_otter_tests):
     file_path = os.path.join(root_path, file)
-    if pdfs:
-        assign_args = ["otter", "assign", "-v", file_path, root_path]
-    else:
-        assign_args = ["otter", "assign", "-v", "--no-pdfs", file_path, root_path]
+    assign_args = ["otter", "assign", "-v"]
+    if not pdfs:
+        assign_args.append("--no-pdfs")
+    if not run_otter_tests:
+        assign_args.append("--no-run-tests")
+    assign_args.append(file_path)
+    assign_args.append(root_path)
+    
     otter_assign_out = run(assign_args, capture_output=True)
     out = (otter_assign_out.stdout).decode("utf-8")
     err = (otter_assign_out.stderr).decode("utf-8")
     msg = "All autograder tests passed"
-    if msg in out or msg in err:
+    if not run_otter_tests:
+        print(f"Colab {footprint}: Complete: Tests NOT Run: {file}")
+    elif msg in out or msg in err:
         print(f"Colab {footprint}: Tests Passed: {file}")
     else:
         print(f"Colab {footprint}: Tests NOT Passed: {file}")
@@ -66,7 +72,7 @@ def colab_first_cell(root_path, file, args):
     process_ipynb(file_path, insert_headers)
 
 
-def convert_raw_to_colab_raw(args, is_test):
+def convert_raw_to_colab_raw(args, is_test, run_otter_tests):
     parent_path = args.local_notebooks_folder
     for folder in ["hw", "lab", "lectures", "project", "reference"]:
         for root, dirs, files in os.walk(f"{os.getcwd()}/{parent_path}/{folder}"):
@@ -75,10 +81,11 @@ def convert_raw_to_colab_raw(args, is_test):
                     new_file_path = root.replace(parent_path, args.output_folder)
                     create_colab_raw_dir(root, new_file_path)
                     change_colab_assignment_config(new_file_path, file)  # adds runs_on
-                    assign(new_file_path, file, args.pdfs, args.local_notebooks_folder)
+                    assign(new_file_path, file, args.pdfs, args.local_notebooks_folder, run_otter_tests)
                     colab_first_cell(f"{new_file_path}/student", file, args)
                     colab_first_cell(f"{new_file_path}/autograder", file, args)
                     remove_otter_assign_output(new_file_path)
+                    strip_unnecessary_keys(f"{new_file_path}/student/{file}")
 
 
 if __name__ == "__main__":
@@ -88,23 +95,15 @@ if __name__ == "__main__":
     parser.add_argument('data_8_repo_url', metavar='p', type=str, help='https://github.com/data-8')
     parser.add_argument('materials_repo', metavar='p', type=str, help='materials-sp22-colab')
     parser.add_argument('--is_test', metavar='it', type=bool, help='if testing do one notebook', default=False, action=argparse.BooleanOptionalAction)
+    parser.add_argument('--run_otter_tests', metavar='ot', type=bool, help='This means when otter assign is executed we double check the tests pass', default=True, action=argparse.BooleanOptionalAction)
     args, unknown = parser.parse_known_args()
     output_folder = f"{args.local_notebooks_folder}_colab"
-    student_path = f"{os.getcwd()}/notebooks_colab_footprint_student"
-    instructor_path = f"{os.getcwd()}/notebooks_colab_footprint_instructor"
     args.pdfs = True
     if "no_footprint" in args.local_notebooks_folder:
-        student_path = f"{os.getcwd()}/notebooks_colab_no_footprint_student"
-        instructor_path = f"{os.getcwd()}/notebooks_colab_no_footprint_instructor"
+        output_folder = f"{args.local_notebooks_folder}_colab"
         args.pdfs = False
     end_path = f"{os.getcwd()}/{output_folder}/"
     if os.path.exists(end_path):
         shutil.rmtree(end_path)
-    if os.path.exists(student_path):
-        shutil.rmtree(student_path)
-    if os.path.exists(instructor_path):
-        shutil.rmtree(instructor_path)
-    args.student_path = student_path
-    args.instructor_path = instructor_path
     args.output_folder = output_folder
-    convert_raw_to_colab_raw(args, args.is_test)
+    convert_raw_to_colab_raw(args, args.is_test, args.run_otter_tests)

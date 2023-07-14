@@ -2,7 +2,7 @@ from subprocess import run
 import argparse
 import os
 import shutil
-from util import remove_otter_assign_output
+from util import remove_otter_assign_output, strip_unnecessary_keys
 
 
 def assign(local_notebooks_folder, is_test):
@@ -23,6 +23,8 @@ def assign(local_notebooks_folder, is_test):
                         with open(f"{os.getcwd()}/otter_assign_log_{local_notebooks_folder}.txt", "a") as f:
                             f.write(err)
                     remove_otter_assign_output(dir_path)
+                    strip_unnecessary_keys(f"{dir_path}/student/{file}")
+                    strip_unnecessary_keys(f"{dir_path}/autograder/{file}")
 
 
 if __name__ == "__main__":

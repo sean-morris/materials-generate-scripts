@@ -2,7 +2,7 @@ import json
 import os
 import shutil
 import argparse
-from util import process_ipynb
+from util import process_ipynb, strip_unnecessary_keys
 
 
 def binderize(notebooks_assign, otter_version, is_test):
@@ -23,9 +23,10 @@ def binderize(notebooks_assign, otter_version, is_test):
                     insert_headers = [
                         "# The pip install can take a minute\n",
                         f"%pip install -q otter-grader=={otter_version}\n",
-                        "%pip install -q datascience\n"
+                        "%pip install -q datascience==0.17.5\n"
                     ]
                     process_ipynb(copy_to_file, insert_headers)
+                    strip_unnecessary_keys(copy_to_file)
 
 
 if __name__ == "__main__":

@@ -2,10 +2,11 @@ import json
 import os
 import shutil
 import argparse
-from util import process_ipynb
+from util import process_ipynb, strip_unnecessary_keys
 
 
 def replace_jl_otter_declare(file_path, name):
+    inf = "https://www.inferentialthinking.com/data"
     with open(file_path) as f:
         data = json.load(f)
         for cell in data["cells"]:
@@ -13,6 +14,9 @@ def replace_jl_otter_declare(file_path, name):
             for index in range(len(imp)):
                 if "otter.Notebook" in imp[index]:
                     imp[index] = f"grader = otter.Notebook(\"{name}\", jupyterlite=True)"
+                
+                if inf in imp[index]:
+                    imp[index] = imp[index].replace(inf, "https://ds-modules.github.io/materials-sp22-assets")
 
         json_object = json.dumps(data, indent=1)
         with open(file_path, "w") as outfile:
@@ -36,11 +40,12 @@ def jupyterlite(notebooks_assign, otter_version, is_test):
                     shutil.copyfile(file_path, copy_to_file)
                     insert_headers = [
                         "# The pip install can take a minute\n",
-                        f"%pip install -q urllib3<2.0 otter-grader=={otter_version} datascience==0.17.5 ipywidgets\n",
+                        f"%pip install -q urllib3<2.0 otter-grader=={otter_version} datascience ipywidgets\n",
                         "import pyodide_http\n",
                         "pyodide_http.patch_all()\n"
                     ]
                     process_ipynb(copy_to_file, insert_headers)
+                    strip_unnecessary_keys(copy_to_file)
                     replace_jl_otter_declare(copy_to_file, file)
 
 
