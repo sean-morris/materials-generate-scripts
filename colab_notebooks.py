@@ -49,7 +49,7 @@ def create_colab_raw_dir(root, new_file_path):
     shutil.copytree(root, new_file_path, dirs_exist_ok=True)
 
 
-def colab_first_cell(root_path, file, args):
+def colab_first_cell(root_path, file, header_file, args):
     otter_version = args.otter_version
     data_8_repo_url = args.data_8_repo_url
     materials_repo = args.materials_repo
@@ -58,11 +58,13 @@ def colab_first_cell(root_path, file, args):
 
     file_path = os.path.join(root_path, file)
     rel_path = "/".join(file_path.split("/")[7:-2])
+    if "lectures" in file_path:
+        rel_path = "/".join(file_path.split("/")[7:-1])
     insert_headers = []
     clone_repo_path = f"{data_8_repo_url}/{materials_repo}"
     notebook_path = f"{materials_repo}/{rel_path}"
 
-    with open("colab-header.txt", "r") as f:
+    with open(header_file, "r") as f:
         for line in f:
             line = line.replace("||OTTER_GRADER_VERSION||", otter_version)
             line = line.replace("||CLONE_REPO_PATH||", clone_repo_path)
@@ -74,7 +76,7 @@ def colab_first_cell(root_path, file, args):
 
 def convert_raw_to_colab_raw(args, is_test, run_otter_tests):
     parent_path = args.local_notebooks_folder
-    for folder in ["hw", "lab", "lectures", "project", "reference"]:
+    for folder in ["hw", "lab", "project", "reference"]:
         for root, dirs, files in os.walk(f"{os.getcwd()}/{parent_path}/{folder}"):
             for file in files:
                 if (not is_test and file.endswith(".ipynb")) or (is_test and file == "hw01.ipynb"):
@@ -82,10 +84,17 @@ def convert_raw_to_colab_raw(args, is_test, run_otter_tests):
                     create_colab_raw_dir(root, new_file_path)
                     change_colab_assignment_config(new_file_path, file)  # adds runs_on
                     assign(new_file_path, file, args.pdfs, args.local_notebooks_folder, run_otter_tests)
-                    colab_first_cell(f"{new_file_path}/student", file, args)
-                    colab_first_cell(f"{new_file_path}/autograder", file, args)
+                    colab_first_cell(f"{new_file_path}/student", file, "colab-header.txt", args)
+                    colab_first_cell(f"{new_file_path}/autograder", file, "colab-header.txt", args)
                     remove_otter_assign_output(new_file_path)
                     strip_unnecessary_keys(f"{new_file_path}/student/{file}")
+
+    for root, dirs, files in os.walk(f"{os.getcwd()}/{parent_path}/lectures"):
+        new_file_path = root.replace(parent_path, args.output_folder)
+        create_colab_raw_dir(root, new_file_path)
+        for file in files:    
+            if (not is_test and file.endswith(".ipynb")) or (is_test and file == "lec01.ipynb"):
+                colab_first_cell(new_file_path, file, "colab-header-lectures.txt", args)
 
 
 if __name__ == "__main__":
