@@ -48,11 +48,11 @@ def recursive_search_and_replace(dictionary, search_value, replace_value):
                     cell["source"][index] = elem
 
 
-def provide_url_in_notebook(parent_path, public_url):
+def provide_url_in_notebook(parent_path, public_url, is_test, test_notebook):
     for folder in ["hw", "lab", "lectures", "project", "reference"]:
         for root, dirs, files in os.walk(f"{os.getcwd()}/{parent_path}/{folder}"):
             for file in files:
-                if file.endswith(".ipynb"):
+                if (not is_test and file.endswith(".ipynb")) or (is_test and test_notebook == file):
                     file_path = os.path.join(root, file)
                     rel_path = "/".join(file_path.split("/")[7:-1])
                     assets_path = f"{os.getcwd()}/notebooks_assets/{rel_path}"
@@ -74,6 +74,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Modify raw notebooks -- removing files from Assignment Config and changing paths to file')
     parser.add_argument('local_notebooks_folder', metavar='p', type=str, help='notebooks_no_footprint')
     parser.add_argument('public_url', metavar='p', type=str, help='https://ds-modules.github.io/materials-sp22-assets')
+    parser.add_argument('--is_test', metavar='it', type=bool, help='if testing do one notebook', default=False, action=argparse.BooleanOptionalAction)
+    parser.add_argument('test_notebook', metavar='p', type=str, help='hw03.ipynb')
     args, unknown = parser.parse_known_args()
-    provide_url_in_notebook(args.local_notebooks_folder, args.public_url)
+    provide_url_in_notebook(args.local_notebooks_folder, args.public_url, args.is_test, args.test_notebook)
     print(f"Notebooks no footprint -- All files access public url {args.public_url}")

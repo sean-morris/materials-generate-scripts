@@ -74,12 +74,12 @@ def colab_first_cell(root_path, file, header_file, args):
     process_ipynb(file_path, insert_headers)
 
 
-def convert_raw_to_colab_raw(args, is_test, run_otter_tests):
+def convert_raw_to_colab_raw(args, is_test, run_otter_tests, test_notebook):
     parent_path = args.local_notebooks_folder
     for folder in ["hw", "lab", "project", "reference"]:
         for root, dirs, files in os.walk(f"{os.getcwd()}/{parent_path}/{folder}"):
             for file in files:
-                if (not is_test and file.endswith(".ipynb")) or (is_test and file == "hw01.ipynb"):
+                if (not is_test and file.endswith(".ipynb")) or (is_test and file == test_notebook):
                     new_file_path = root.replace(parent_path, args.output_folder)
                     create_colab_raw_dir(root, new_file_path)
                     change_colab_assignment_config(new_file_path, file)  # adds runs_on
@@ -93,7 +93,7 @@ def convert_raw_to_colab_raw(args, is_test, run_otter_tests):
         new_file_path = root.replace(parent_path, args.output_folder)
         create_colab_raw_dir(root, new_file_path)
         for file in files:    
-            if (not is_test and file.endswith(".ipynb")) or (is_test and file == "lec01.ipynb"):
+            if (not is_test and file.endswith(".ipynb")) or (is_test and file == test_notebook and "lec" in test_notebook):
                 colab_first_cell(new_file_path, file, "colab-header-lectures.txt", args)
 
 
@@ -105,14 +105,14 @@ if __name__ == "__main__":
     parser.add_argument('materials_repo', metavar='p', type=str, help='materials-sp22-colab')
     parser.add_argument('--is_test', metavar='it', type=bool, help='if testing do one notebook', default=False, action=argparse.BooleanOptionalAction)
     parser.add_argument('--run_otter_tests', metavar='ot', type=bool, help='This means when otter assign is executed we double check the tests pass', default=True, action=argparse.BooleanOptionalAction)
+    parser.add_argument('test_notebook', metavar='p', type=str, help='hw03.ipynb')
     args, unknown = parser.parse_known_args()
     output_folder = f"{args.local_notebooks_folder}_colab"
     args.pdfs = True
     if "no_footprint" in args.local_notebooks_folder:
-        output_folder = f"{args.local_notebooks_folder}_colab"
         args.pdfs = False
     end_path = f"{os.getcwd()}/{output_folder}/"
     if os.path.exists(end_path):
         shutil.rmtree(end_path)
     args.output_folder = output_folder
-    convert_raw_to_colab_raw(args, args.is_test, args.run_otter_tests)
+    convert_raw_to_colab_raw(args, args.is_test, args.run_otter_tests, args.test_notebook)
