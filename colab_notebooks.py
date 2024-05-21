@@ -83,7 +83,7 @@ def convert_raw_to_colab_raw(args, is_test, run_otter_tests, test_notebook):
                     new_file_path = root.replace(parent_path, args.output_folder)
                     create_colab_raw_dir(root, new_file_path)
                     change_colab_assignment_config(new_file_path, file)  # adds runs_on
-                    assign(new_file_path, file, args.pdfs, args.local_notebooks_folder, run_otter_tests)
+                    assign(new_file_path, file, args.create_pdfs, args.local_notebooks_folder, run_otter_tests)
                     colab_first_cell(f"{new_file_path}/student", file, "colab-header.txt", args)
                     colab_first_cell(f"{new_file_path}/autograder", file, "colab-header.txt", args)
                     remove_otter_assign_output(new_file_path)
@@ -100,7 +100,8 @@ def convert_raw_to_colab_raw(args, is_test, run_otter_tests, test_notebook):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Modify notebooks -- removing files and changing paths to file')
     parser.add_argument('local_notebooks_folder', metavar='p', type=str, help='notebooks or notebooks_no_footprint')
-    parser.add_argument('otter_version', metavar='p', type=str, help='4.3.4')
+    parser.add_argument('--create_pdfs', metavar='cp', type=bool, help='are we creating PDFS', default=True, action=argparse.BooleanOptionalAction)
+    parser.add_argument('otter_version', metavar='p', type=str, help='4.4.1')
     parser.add_argument('data_8_repo_url', metavar='p', type=str, help='https://github.com/data-8')
     parser.add_argument('materials_repo', metavar='p', type=str, help='materials-sp22-colab')
     parser.add_argument('--is_test', metavar='it', type=bool, help='if testing do one notebook', default=False, action=argparse.BooleanOptionalAction)
@@ -108,9 +109,6 @@ if __name__ == "__main__":
     parser.add_argument('test_notebook', metavar='p', type=str, help='hw03.ipynb')
     args, unknown = parser.parse_known_args()
     output_folder = f"{args.local_notebooks_folder}_colab"
-    args.pdfs = True
-    if "no_footprint" in args.local_notebooks_folder:
-        args.pdfs = False
     end_path = f"{os.getcwd()}/{output_folder}/"
     if os.path.exists(end_path):
         shutil.rmtree(end_path)
