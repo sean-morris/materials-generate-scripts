@@ -30,10 +30,11 @@ def assign(root_path, file, pdfs, footprint, run_otter_tests):
         assign_args.append("--no-run-tests")
     assign_args.append(file_path)
     assign_args.append(root_path)
-    
+
     otter_assign_out = run(assign_args, capture_output=True)
     out = (otter_assign_out.stdout).decode("utf-8")
     err = (otter_assign_out.stderr).decode("utf-8")
+    
     msg = "All autograder tests passed"
     if not run_otter_tests:
         print(f"Colab {footprint}: Complete: Tests NOT Run: {file}")
@@ -41,7 +42,8 @@ def assign(root_path, file, pdfs, footprint, run_otter_tests):
         print(f"Colab {footprint}: Tests Passed: {file}")
     else:
         print(f"Colab {footprint}: Tests NOT Passed: {file}")
-        print(err)
+        with open(f"{os.getcwd()}/colab_assign_log_{file}.txt", "a") as f:
+            f.write(err)
 
 
 def create_colab_raw_dir(root, new_file_path):
