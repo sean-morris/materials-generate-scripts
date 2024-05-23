@@ -2,6 +2,20 @@ import os
 import json
 
 
+def get_path_to_notebook(note):
+    path = []
+    if "hw" in note:
+        path.append("hw")
+    elif "lab" in note:
+        path.append("lab")
+    elif "project" in note:
+        path.append("project")
+    elif "reference" in note:
+        path.append("reference")
+    path.append(note[0:-6])
+    return path
+
+
 def remove_otter_assign_output(dir_path):
     # remove extra files from tests
     otter_config_path = f"{dir_path}/autograder/otter_config.json"

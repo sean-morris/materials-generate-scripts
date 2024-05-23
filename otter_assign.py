@@ -2,7 +2,7 @@ from subprocess import run
 import argparse
 import os
 import shutil
-from util import remove_otter_assign_output, strip_unnecessary_keys
+from util import remove_otter_assign_output, strip_unnecessary_keys, get_path_to_notebook
 
 
 def assign(local_notebooks_folder, create_pdfs, is_test, run_otter_tests, test_notebook):
@@ -45,5 +45,10 @@ if __name__ == "__main__":
     log_path = f"{os.getcwd()}/otter_assign_log_{args.local_notebooks_folder}.txt"
     if os.path.exists(log_path):
         os.remove(log_path)
-
+    if args.is_test:
+        output_folder = f"{args.local_notebooks_folder}_colab"
+        path = "/".join(get_path_to_notebook(args.test_notebook))
+        end_path = f"{os.getcwd()}/{output_folder}/{path}"
+        if os.path.exists(end_path):
+            shutil.rmtree(end_path)
     assign(args.local_notebooks_folder, args.create_pdfs, args.is_test, args.run_otter_tests, args.test_notebook)

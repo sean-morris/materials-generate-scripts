@@ -2,7 +2,7 @@ import os
 import json
 import shutil
 from subprocess import run
-from util import process_ipynb, remove_otter_assign_output, strip_unnecessary_keys
+from util import process_ipynb, remove_otter_assign_output, strip_unnecessary_keys, get_path_to_notebook
 import argparse
 
 
@@ -21,7 +21,7 @@ def change_colab_assignment_config(root_path, file):
     return file_path
 
 
-def assign(root_path, file, pdfs, footprint, run_otter_tests):
+def assign(a_args, root_path, file, pdfs, footprint, run_otter_tests):
     file_path = os.path.join(root_path, file)
     assign_args = ["otter", "assign", "-v"]
     if not pdfs:
@@ -34,7 +34,9 @@ def assign(root_path, file, pdfs, footprint, run_otter_tests):
     otter_assign_out = run(assign_args, capture_output=True)
     out = (otter_assign_out.stdout).decode("utf-8")
     err = (otter_assign_out.stderr).decode("utf-8")
-    
+    if a_args["verbose"]:
+        print(out)
+        print(err)
     msg = "All autograder tests passed"
     if not run_otter_tests:
         print(f"Colab {footprint}: Complete: Tests NOT Run: {file}")
@@ -46,16 +48,17 @@ def assign(root_path, file, pdfs, footprint, run_otter_tests):
             f.write(err)
 
 
-def create_colab_raw_dir(root, new_file_path):
-    os.makedirs(new_file_path, exist_ok=True)
-    shutil.copytree(root, new_file_path, dirs_exist_ok=True)
+def setup_colab_dir(assign_args, colab_assign_dir):
+    shutil.rmtree(colab_assign_dir, ignore_errors=True)
+    os.makedirs(colab_assign_dir, exist_ok=True)
+    shutil.copytree(assign_args["notebooks_source"], colab_assign_dir, dirs_exist_ok=True)
 
 
-def colab_first_cell(root_path, file, header_file, args):
-    otter_version = args.otter_version
-    data_8_repo_url = args.data_8_repo_url
-    materials_repo = args.materials_repo
-    if args.local_notebooks_folder == "notebooks_no_footprint":
+def colab_first_cell(args, root_path, file, header_file, local_notebooks_folder):
+    otter_version = args["otter_version"]
+    data_8_repo_url = args["data_8_repo_url"]
+    materials_repo = args["colab_materials_repo"]
+    if local_notebooks_folder == "notebooks_no_footprint":
         materials_repo = f"{materials_repo}-no-footprint"
 
     file_path = os.path.join(root_path, file)
@@ -76,20 +79,25 @@ def colab_first_cell(root_path, file, header_file, args):
     process_ipynb(file_path, insert_headers)
 
 
+def colab_assign_for_file(a_args, local_notebooks_folder):
+    assign_path = f"{os.getcwd()}/{local_notebooks_folder}_colab/{a_args["assign_type"]}/{a_args["file_no_ext"]}"
+    file_name = f"{a_args["file_no_ext"]}.ipynb"
+    setup_colab_dir(a_args, assign_path)
+    change_colab_assignment_config(assign_path, file_name)  # adds runs_on
+    assign(a_args, assign_path, file_name, a_args["create_pdfs"], local_notebooks_folder, a_args["run_otter_tests"])
+    colab_first_cell(a_args, f"{assign_path}/student", file_name, "colab-header.txt", local_notebooks_folder)
+    colab_first_cell(a_args, f"{assign_path}/autograder", file_name, "colab-header.txt", local_notebooks_folder)
+    remove_otter_assign_output(assign_path)
+    strip_unnecessary_keys(f"{assign_path}/student/{file_name}")
+
+
 def convert_raw_to_colab_raw(args, is_test, run_otter_tests, test_notebook):
     parent_path = args.local_notebooks_folder
     for folder in ["hw", "lab", "project", "reference"]:
         for root, dirs, files in os.walk(f"{os.getcwd()}/{parent_path}/{folder}"):
             for file in files:
                 if (not is_test and file.endswith(".ipynb")) or (is_test and file == test_notebook):
-                    new_file_path = root.replace(parent_path, args.output_folder)
-                    create_colab_raw_dir(root, new_file_path)
-                    change_colab_assignment_config(new_file_path, file)  # adds runs_on
-                    assign(new_file_path, file, args.create_pdfs, args.local_notebooks_folder, run_otter_tests)
-                    colab_first_cell(f"{new_file_path}/student", file, "colab-header.txt", args)
-                    colab_first_cell(f"{new_file_path}/autograder", file, "colab-header.txt", args)
-                    remove_otter_assign_output(new_file_path)
-                    strip_unnecessary_keys(f"{new_file_path}/student/{file}")
+                    colab_assign_for_file()
 
     for root, dirs, files in os.walk(f"{os.getcwd()}/{parent_path}/lectures"):
         new_file_path = root.replace(parent_path, args.output_folder)
@@ -111,8 +119,10 @@ if __name__ == "__main__":
     parser.add_argument('test_notebook', metavar='p', type=str, help='hw03.ipynb')
     args, unknown = parser.parse_known_args()
     output_folder = f"{args.local_notebooks_folder}_colab"
-    end_path = f"{os.getcwd()}/{output_folder}/"
-    if os.path.exists(end_path):
-        shutil.rmtree(end_path)
+    if args.is_test:
+        path = "/".join(get_path_to_notebook(args.test_notebook))
+        end_path = f"{os.getcwd()}/{output_folder}/{path}"
+        # if os.path.exists(end_path):
+        #     shutil.rmtree(end_path)
     args.output_folder = output_folder
     convert_raw_to_colab_raw(args, args.is_test, args.run_otter_tests, args.test_notebook)

@@ -36,7 +36,7 @@ def jupyterlite(notebooks_assign, otter_version, is_test, test_notebook):
                     copy_from = "/".join(file_path.split("/")[:-1])
                     copy_to = os.path.join(root_copy_path, rel_path)
                     copy_to_file = os.path.join(copy_to, file)
-                    shutil.copytree(copy_from, copy_to)
+                    shutil.copytree(copy_from, copy_to, dirs_exist_ok=True)
                     shutil.copyfile(file_path, copy_to_file)
                     insert_headers = [
                         "# The pip install can take a minute\n",
@@ -57,8 +57,8 @@ if __name__ == "__main__":
     parser.add_argument('test_notebook', metavar='p', type=str, help='hw03.ipynb')
     args, unknown = parser.parse_known_args()
     folder = f"{args.local_notebooks_folder}_jupyterlite"
-    end_path = f"{os.getcwd()}/{folder}/"
-    if os.path.exists(end_path):
-        shutil.rmtree(end_path)
+    # end_path = f"{os.getcwd()}/{folder}/"
+    # if os.path.exists(end_path):
+    #     shutil.rmtree(end_path)
     jupyterlite(args.local_notebooks_folder, args.otter_version, args.is_test, args.test_notebook)
     print(f"JupyterLite: {args.local_notebooks_folder} Created")

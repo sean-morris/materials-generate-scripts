@@ -39,10 +39,10 @@ if __name__ == "__main__":
     parser.add_argument('test_notebook', metavar='p', type=str, help='hw03.ipynb')
     args, unknown = parser.parse_known_args()
     end_path = f"{os.getcwd()}/{OUTPUT_FOLDER}/"
-    if os.path.exists(end_path):
-        shutil.rmtree(end_path)
+    # if os.path.exists(end_path):
+    #     shutil.rmtree(end_path)
     raw_path = f"{os.getcwd()}/{args.local_notebooks_folder}_no_footprint/"
-    if os.path.exists(raw_path):
-        shutil.rmtree(raw_path)
+    # if os.path.exists(raw_path):
+    #     shutil.rmtree(raw_path)
     copy_files_assests_repo(args.local_notebooks_folder, args.is_test, args.test_notebook)
     print(f"Assets Copied: {end_path}")
