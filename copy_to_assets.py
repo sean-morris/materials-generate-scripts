@@ -1,6 +1,5 @@
 import shutil
 import os
-import argparse
 
 OUTPUT_FOLDER = "notebooks_assets"
 
@@ -9,40 +8,24 @@ OUTPUT_FOLDER = "notebooks_assets"
 # ipynb files. It will also delete the d8error.py and errorConfig.json files
 # All files are moved to ./assets -- they should then be copied to whatever
 # location will become the publicly available spot for these files
-def copy_files_assests_repo(parent_path, is_test, test_notebook):
-    assets_path = f"{os.getcwd()}/{OUTPUT_FOLDER}"
-    for folder in ["hw", "lab", "lectures", "project", "reference"]:
-        for root, dirs, files in os.walk(f"{os.getcwd()}/{parent_path}/{folder}"):
-            for file in files:
-                file_path = os.path.join(root, file)
-                rel_path = "/".join(file_path.split("/")[7:-1])
-                if not is_test or (is_test and test_notebook[:-6] in file_path):
-                    if not file.endswith(".ipynb") and file != ".DS_Store":
-                        rel_path = "/".join(file_path.split("/")[7:-1])
-                        assets_rel_path = f"{assets_path}/{rel_path}"
-                        os.makedirs(assets_rel_path, exist_ok=True)
-                        try:
-                            shutil.copy(file_path, assets_rel_path)
-                        except Exception:
-                            print("here")
-                            pass  # already exists
-                    elif file.endswith(".ipynb"):
-                        raw_path = f"{os.getcwd()}/{parent_path}_no_footprint/{rel_path}"
-                        os.makedirs(raw_path, exist_ok=True)
-                        shutil.copy(file_path, raw_path)
+def copy_files_assests_repo(a_args):
+    assets_path = f"{os.getcwd()}/{OUTPUT_FOLDER}/{a_args['assign_type']}/{a_args['file_no_ext']}"
+    assignment_source_path = f"{os.getcwd()}/notebooks/{a_args['assign_type']}/{a_args['file_no_ext']}"
+    if not os.path.exists(assets_path):
+        os.makedirs(assets_path)
+    else:
+        shutil.rmtree(assets_path)
 
+    for _, _, files in os.walk(assignment_source_path):
+        for file in files:
+            file_extension = os.path.splitext(file)[1]
+            if file_extension not in [".ipynb", ""]:
+                src_file = os.path.join(assignment_source_path, file)
+                dest_file = os.path.join(assets_path, file)
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Copy all non-notebook files out of path perserving relative paths')
-    parser.add_argument('local_notebooks_folder', metavar='p', type=str, help='notebooks')
-    parser.add_argument('--is_test', metavar='it', type=bool, help='if testing do one notebook', default=False, action=argparse.BooleanOptionalAction)
-    parser.add_argument('test_notebook', metavar='p', type=str, help='hw03.ipynb')
-    args, unknown = parser.parse_known_args()
-    end_path = f"{os.getcwd()}/{OUTPUT_FOLDER}/"
-    # if os.path.exists(end_path):
-    #     shutil.rmtree(end_path)
-    raw_path = f"{os.getcwd()}/{args.local_notebooks_folder}_no_footprint/"
-    # if os.path.exists(raw_path):
-    #     shutil.rmtree(raw_path)
-    copy_files_assests_repo(args.local_notebooks_folder, args.is_test, args.test_notebook)
-    print(f"Assets Copied: {end_path}")
+                dest_file_dir = os.path.dirname(dest_file)
+                if not os.path.exists(dest_file_dir):
+                    os.makedirs(dest_file_dir)
+
+                shutil.copy2(src_file, dest_file)
+    print(f"Copied Assets: {a_args['assign_type']}/{a_args['file_no_ext']}")
