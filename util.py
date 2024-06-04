@@ -1,5 +1,6 @@
 import os
 import json
+import shutil
 
 
 def get_path_to_notebook(note):
@@ -75,6 +76,17 @@ def create_file_path(root, type):
     dir = f"{os.getcwd()}/{type}/{dir}"
     os.makedirs(dir, exist_ok=True)
     return dir
+
+
+def setup_assign_dir(a_args, assign_dir):
+    shutil.rmtree(assign_dir, ignore_errors=True)
+    os.makedirs(assign_dir, exist_ok=True)
+    if "no_footprint" not in assign_dir:
+        shutil.copytree(a_args["notebooks_source"], assign_dir, dirs_exist_ok=True)
+    else:
+        source = f"{a_args['notebooks_source']}/{a_args['file_no_ext']}.ipynb"
+        os.makedirs(assign_dir, exist_ok=True)
+        shutil.copy(source, assign_dir)
 
 
 def process_ipynb(file_path, insert_headers):

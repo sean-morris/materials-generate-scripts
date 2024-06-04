@@ -47,8 +47,9 @@ def recursive_search_and_replace(dictionary, search_value, replace_value):
                     cell["source"][index] = elem
 
 
-def provide_url_in_notebook(a_args):
-    file_path = f"{os.getcwd()}/notebooks_no_footprint_colab/{a_args['assign_type']}/{a_args['file_no_ext']}/{a_args['file_no_ext']}.ipynb"
+def provide_url_in_notebook(a_args, local_notebooks_folder):
+    file_path = f"{os.getcwd()}/{local_notebooks_folder}/{a_args['assign_type']}/"
+    file_path += f"{a_args['file_no_ext']}/{a_args['file_no_ext']}.ipynb"
     assets_path = f"{os.getcwd()}/notebooks_assets/{a_args['assign_type']}/{a_args['file_no_ext']}"
     with open(file_path, 'r') as nb:
         nb_json = json.load(nb)
@@ -61,4 +62,4 @@ def provide_url_in_notebook(a_args):
 
     with open(file_path, 'w+') as target:
         json.dump(nb_json, target, indent=3)
-    print(f"Added Public URL - no_footprint_colab: {a_args['assign_type']}/{a_args['file_no_ext']}")
+    print(f"Added Public URL - no_footprint: {local_notebooks_folder}/{a_args['assign_type']}/{a_args['file_no_ext']}")

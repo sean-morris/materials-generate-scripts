@@ -57,6 +57,12 @@ def run_assign(assign_type, file_no_ext):
     cn.colab_assign_for_file(assign_args, "notebooks")
     ca.copy_files_assests_repo(assign_args)
     cn.colab_assign_for_file(assign_args, "notebooks_no_footprint")
+    oa.assign(assign_args, "notebooks_no_footprint", create_pdfs=False)
+    oa.assign(assign_args, "notebooks", create_pdfs=assign_args["create_pdfs"])
+    jc.jupyterlite(assign_args, "notebooks")
+    jc.jupyterlite(assign_args, "notebooks_no_footprint")
+    bc.binderize(assign_args, "notebooks")
+    bc.binderize(assign_args, "notebooks_no_footprint")
 
 
 def handle_lectures(assign_type, file_no_ext):
@@ -106,4 +112,4 @@ def run(file):
     print("The notebooks are created!")
 
 
-run("lec01.ipynb")
+run("hw01.ipynb")
