@@ -21,6 +21,10 @@ def assign(a_args, local_notebooks_folder, create_pdfs=False):
     otter_assign_out = run(assign_args, capture_output=True)
     out = (otter_assign_out.stdout).decode("utf-8")
     err = (otter_assign_out.stderr).decode("utf-8")
+    if a_args["verbose"]:
+        print(out)
+        print(err)
+
     msg = "All autograder tests passed"
     if msg in out or msg in err:
         print(f"Hub: {local_notebooks_folder}: Tests Passed: {file_name}")

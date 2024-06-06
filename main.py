@@ -7,10 +7,10 @@ import shutil
 import os
 
 assignments = {
-      "hw": range(1, 12),
-      "lab": range(1, 10),
-      "project": range(1, 3),
-      "lec": range(1, 39)
+      "hw": range(1, 13),
+      "lab": range(1, 11),
+      "project": range(1, 4),
+      "lec": [1] + list(range(3, 22)) + list(range(23, 34)) + list(range(35, 40))
 }
 reference_notebook = "datascience-to-pandas.ipynb"
 VERBOSE = False
@@ -47,7 +47,7 @@ def run_assign(assign_type, file_no_ext):
         "notebooks_source": raw_path,
         "assign_type": assign_type,
         "file_no_ext": file_no_ext,
-        "create_pdfs": True,
+        "create_pdfs": False,
         "run_otter_tests": True,
         "otter_version": OTTER_VERSION,
         "data_8_repo_url": COLAB_CLONE_REPO,
@@ -100,6 +100,8 @@ def run(file):
     for assign_type, assigns in assignments.items():
         for f in assigns:
             file_no_ext = f"{assign_type}{f:02}"
+            if assign_type == "project":
+                file_no_ext = f"{assign_type}{f}"
             name = f"{file_no_ext}.ipynb"
             if not file or (file == name):
                 if assign_type == "lec":
@@ -108,8 +110,8 @@ def run(file):
                     setup(assign_type, file_no_ext)
                     run_assign(assign_type, file_no_ext)
     if not file or (file is reference_notebook):
-        run_assign("reference/f{reference_notebbok}")
+        run_assign("reference", "datascience-to-pandas")
     print("The notebooks are created!")
 
-
-run("hw01.ipynb")
+# full file name: hw02.ipynb
+run("hw02.ipynb")
