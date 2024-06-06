@@ -8,7 +8,7 @@ OUTPUT_FOLDER = "notebooks_assets"
 # ipynb files. It will also delete the d8error.py and errorConfig.json files
 # All files are moved to ./assets -- they should then be copied to whatever
 # location will become the publicly available spot for these files
-def copy_files_assests_repo(a_args):
+def copy_files_assets_repo(a_args):
     assets_path = f"{os.getcwd()}/{OUTPUT_FOLDER}/{a_args['assign_type']}/{a_args['file_no_ext']}"
     assignment_source_path = f"{os.getcwd()}/notebooks/{a_args['assign_type']}/{a_args['file_no_ext']}"
     if not os.path.exists(assets_path):

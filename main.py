@@ -12,7 +12,7 @@ assignments = {
       "project": range(1, 4),
       "lec": [1] + list(range(3, 22)) + list(range(23, 34)) + list(range(35, 40))
 }
-reference_notebook = "datascience-to-pandas.ipynb"
+reference_notebook = "datascience-to-pandas"
 VERBOSE = False
 OTTER_VERSION = "4.4.1"
 COLAB_CLONE_REPO = "https://github.com/data-8"
@@ -55,7 +55,7 @@ def run_assign(assign_type, file_no_ext):
         "assets_url": 'https://ds-modules.github.io/materials-sp22-assets'
     }
     cn.colab_assign_for_file(assign_args, "notebooks")
-    ca.copy_files_assests_repo(assign_args)
+    ca.copy_files_assets_repo(assign_args)
     cn.colab_assign_for_file(assign_args, "notebooks_no_footprint")
     oa.assign(assign_args, "notebooks_no_footprint", create_pdfs=False)
     oa.assign(assign_args, "notebooks", create_pdfs=assign_args["create_pdfs"])
@@ -109,9 +109,10 @@ def run(file):
                 else:
                     setup(assign_type, file_no_ext)
                     run_assign(assign_type, file_no_ext)
-    if not file or (file is reference_notebook):
-        run_assign("reference", "datascience-to-pandas")
+    if not file or (file is f"{reference_notebook}.ipiynb"):
+        run_assign("reference", f"{reference_notebook}")
     print("The notebooks are created!")
+
 
 # full file name: hw02.ipynb
 run("hw02.ipynb")
