@@ -1,44 +1,23 @@
-import json
 import os
 import shutil
-import argparse
 from util import process_ipynb, strip_unnecessary_keys
 
 
-def binderize(notebooks_assign, otter_version, is_test, test_notebook):
-    root_copy_path = f"{os.getcwd()}/{notebooks_assign}_binder"
-    root_notebooks_assign = f"{os.getcwd()}/{notebooks_assign}"
-    for root, dirs, files in os.walk(root_notebooks_assign):
-        for file in files:
-            if (not is_test and file.endswith(".ipynb")) or (is_test and file == test_notebook):
-                file_path = os.path.join(root, file)
-                is_user_notebook = "student" in file_path or "autograder" in file_path
-                if is_user_notebook:
-                    rel_path = "/".join(file_path.split("/")[7:-1])
-                    copy_from = "/".join(file_path.split("/")[:-1])
-                    copy_to = os.path.join(root_copy_path, rel_path)
-                    copy_to_file = os.path.join(copy_to, file)
-                    shutil.copytree(copy_from, copy_to)
-                    shutil.copyfile(file_path, copy_to_file)
-                    insert_headers = [
-                        "# The pip install can take a minute\n",
-                        f"%pip install -q otter-grader=={otter_version}\n",
-                        "%pip install -q datascience==0.17.5\n"
-                    ]
-                    process_ipynb(copy_to_file, insert_headers)
-                    strip_unnecessary_keys(copy_to_file)
+def binderize(a_args, local_notebooks_folder):
+    root_copy_path = f"{os.getcwd()}/{local_notebooks_folder}_binder"
+    rel_path = f"{a_args['assign_type']}/{a_args['file_no_ext']}"
+    file_name = f"{a_args['file_no_ext']}.ipynb"
+    copy_to = os.path.join(root_copy_path, rel_path)
+    copy_to_file = os.path.join(copy_to, file_name)
+    copy_from = f"{local_notebooks_folder}/{a_args['assign_type']}/{a_args['file_no_ext']}/student"
 
+    shutil.copytree(copy_from, copy_to, dirs_exist_ok=True)
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Create binder notebooks')
-    parser.add_argument('local_notebooks_folder', metavar='local_notebooks_folder', type=str, help='notebooks_no_footprint')
-    parser.add_argument('otter_version', metavar='otter_version', type=str, help='4.3.4')
-    parser.add_argument('--is_test', metavar='it', type=bool, help='if testing do one notebook', default=False, action=argparse.BooleanOptionalAction)
-    parser.add_argument('test_notebook', metavar='p', type=str, help='hw03.ipynb')
-    args, unknown = parser.parse_known_args()
-    folder = f"{args.local_notebooks_folder}_binder"
-    end_path = f"{os.getcwd()}/{folder}/"
-    if os.path.exists(end_path):
-        shutil.rmtree(end_path)
-    binderize(args.local_notebooks_folder, args.otter_version, args.is_test, args.test_notebook)
-    print(f"Binder: {args.local_notebooks_folder} Created")
+    insert_headers = [
+        "# The pip install can take a minute\n",
+        f"%pip install -q otter-grader=={a_args['otter_version']}\n",
+        "%pip install -q datascience==0.17.5\n"
+    ]
+    process_ipynb(copy_to_file, insert_headers)
+    strip_unnecessary_keys(copy_to_file)
+    print(f"Binder: {copy_to} Created")

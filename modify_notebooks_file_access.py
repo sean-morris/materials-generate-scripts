@@ -1,6 +1,5 @@
 import os
 import json
-import argparse
 
 
 def remove_files_config(nb_json):
@@ -48,34 +47,19 @@ def recursive_search_and_replace(dictionary, search_value, replace_value):
                     cell["source"][index] = elem
 
 
-def provide_url_in_notebook(parent_path, public_url, is_test, test_notebook):
-    for folder in ["hw", "lab", "lectures", "project", "reference"]:
-        for root, dirs, files in os.walk(f"{os.getcwd()}/{parent_path}/{folder}"):
-            for file in files:
-                if (not is_test and file.endswith(".ipynb")) or (is_test and test_notebook == file):
-                    file_path = os.path.join(root, file)
-                    rel_path = "/".join(file_path.split("/")[7:-1])
-                    assets_path = f"{os.getcwd()}/notebooks_assets/{rel_path}"
-                    with open(file_path, 'r') as nb:
-                        nb_json = json.load(nb)
-                    remove_files_config(nb_json)
-                    for r, d, fs in os.walk(assets_path):
-                        for a in fs:
-                            url_rel_path = "/".join(r.split("/")[7:])
-                            url_path = f"{public_url}/{url_rel_path}/{a}"
-                            remove_d8error_import(nb_json)
-                            recursive_search_and_replace(nb_json, a, url_path)
+def provide_url_in_notebook(a_args, local_notebooks_folder):
+    file_path = f"{os.getcwd()}/{local_notebooks_folder}/{a_args['assign_type']}/"
+    file_path += f"{a_args['file_no_ext']}/{a_args['file_no_ext']}.ipynb"
+    assets_path = f"{os.getcwd()}/notebooks_assets/{a_args['assign_type']}/{a_args['file_no_ext']}"
+    with open(file_path, 'r') as nb:
+        nb_json = json.load(nb)
+    remove_files_config(nb_json)
+    for r, _, fs in os.walk(assets_path):
+        for a in fs:
+            url_path = f"{a_args['assets_url']}/{a_args['assign_type']}/{a_args['file_no_ext']}/{a}"
+            remove_d8error_import(nb_json)
+            recursive_search_and_replace(nb_json, a, url_path)
 
-                    with open(file_path, 'w+') as target:
-                        json.dump(nb_json, target, indent=3)
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Modify raw notebooks -- removing files from Assignment Config and changing paths to file')
-    parser.add_argument('local_notebooks_folder', metavar='p', type=str, help='notebooks_no_footprint')
-    parser.add_argument('public_url', metavar='p', type=str, help='https://ds-modules.github.io/materials-sp22-assets')
-    parser.add_argument('--is_test', metavar='it', type=bool, help='if testing do one notebook', default=False, action=argparse.BooleanOptionalAction)
-    parser.add_argument('test_notebook', metavar='p', type=str, help='hw03.ipynb')
-    args, unknown = parser.parse_known_args()
-    provide_url_in_notebook(args.local_notebooks_folder, args.public_url, args.is_test, args.test_notebook)
-    print(f"Notebooks no footprint -- All files access public url {args.public_url}")
+    with open(file_path, 'w+') as target:
+        json.dump(nb_json, target, indent=3)
+    print(f"Added Public URL - no_footprint: {local_notebooks_folder}/{a_args['assign_type']}/{a_args['file_no_ext']}")
