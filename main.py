@@ -3,14 +3,15 @@ import colab_notebooks as cn
 import copy_to_assets as ca
 import jupyterlite_create as jc
 import otter_assign as oa
+import copy_to_repos as cr
 import shutil
 import os
 
 assignments = {
-      "hw": range(1, 13),
-      "lab": range(1, 11),
-      "project": range(1, 4),
-      "lec": [1] + list(range(3, 22)) + list(range(23, 34)) + list(range(35, 40))
+    #  "hw": range(1, 13),
+    #  "lab": range(1, 11),
+    #  "project": range(1, 4),
+    "lec": [1] + list(range(3, 22)) + list(range(23, 34)) + list(range(35, 40))
 }
 reference_notebook = "datascience-to-pandas"
 VERBOSE = False
@@ -63,6 +64,7 @@ def run_assign(assign_type, file_no_ext):
     jc.jupyterlite(assign_args, "notebooks_no_footprint")
     bc.binderize(assign_args, "notebooks")
     bc.binderize(assign_args, "notebooks_no_footprint")
+    cr.copy_assets(assign_type, file_no_ext)
 
 
 def handle_lectures(assign_type, file_no_ext):
@@ -109,10 +111,10 @@ def run(file):
                 else:
                     setup(assign_type, file_no_ext)
                     run_assign(assign_type, file_no_ext)
-    if not file or (file is f"{reference_notebook}.ipiynb"):
-        run_assign("reference", f"{reference_notebook}")
+    # if not file or (file == f"{reference_notebook}.ipynb"):
+    #     run_assign("reference", f"{reference_notebook}")
     print("The notebooks are created!")
 
 
 # full file name: hw02.ipynb
-run("hw02.ipynb")
+run("")
