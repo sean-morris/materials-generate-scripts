@@ -49,14 +49,21 @@ def recursive_search_and_replace(dictionary, search_value, replace_value):
 
 def provide_url_in_notebook(a_args, local_notebooks_folder):
     file_path = f"{os.getcwd()}/{local_notebooks_folder}/{a_args['assign_type']}/"
-    file_path += f"{a_args['file_no_ext']}/{a_args['file_no_ext']}.ipynb"
-    assets_path = f"{os.getcwd()}/notebooks_assets/{a_args['assign_type']}/{a_args['file_no_ext']}"
+    if a_args["assign_type"] == "lec":
+        file_path += f"{a_args['file_no_ext']}.ipynb"
+        assets_path = f"{os.getcwd()}/notebooks_assets/{a_args['assign_type']}"
+        url_base_path = f"{a_args['assets_url']}/{a_args['assign_type']}"
+    else:
+        file_path += f"{a_args['file_no_ext']}/{a_args['file_no_ext']}.ipynb"
+        assets_path = f"{os.getcwd()}/notebooks_assets/{a_args['assign_type']}/{a_args['file_no_ext']}"
+        url_base_path = f"{a_args['assets_url']}/{a_args['assign_type']}/{a_args['file_no_ext']}"
+    
     with open(file_path, 'r') as nb:
         nb_json = json.load(nb)
     remove_files_config(nb_json)
     for r, _, fs in os.walk(assets_path):
         for a in fs:
-            url_path = f"{a_args['assets_url']}/{a_args['assign_type']}/{a_args['file_no_ext']}/{a}"
+            url_path = f"{url_base_path}/{a}"
             remove_d8error_import(nb_json)
             recursive_search_and_replace(nb_json, a, url_path)
 

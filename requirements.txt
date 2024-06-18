@@ -1,2 +1,4 @@
 datascience==0.17.5
 otter-grader
+GitPython
+PyGithub

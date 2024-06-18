@@ -1,6 +1,6 @@
 import os
 import shutil
-from util import process_ipynb, strip_unnecessary_keys
+from util import process_ipynb, strip_unnecessary_keys, add_sequential_ids_to_notebook
 
 
 def binderize(a_args, local_notebooks_folder):
@@ -20,4 +20,5 @@ def binderize(a_args, local_notebooks_folder):
     ]
     process_ipynb(copy_to_file, insert_headers)
     strip_unnecessary_keys(copy_to_file)
+    add_sequential_ids_to_notebook(copy_to_file, a_args['file_no_ext'])
     print(f"Binder: {copy_to} Created")

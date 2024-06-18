@@ -1,7 +1,7 @@
 from subprocess import run
 import os
 import modify_notebooks_file_access as mn
-from util import remove_otter_assign_output, strip_unnecessary_keys, setup_assign_dir
+from util import remove_otter_assign_output, strip_unnecessary_keys, setup_assign_dir, add_sequential_ids_to_notebook
 
 
 def assign(a_args, local_notebooks_folder, create_pdfs=False):
@@ -18,6 +18,7 @@ def assign(a_args, local_notebooks_folder, create_pdfs=False):
         assign_args.append("--no-run-tests")
     assign_args.append(file_path)
     assign_args.append(assign_path)
+    add_sequential_ids_to_notebook(file_path, a_args['file_no_ext'])
     otter_assign_out = run(assign_args, capture_output=True)
     out = (otter_assign_out.stdout).decode("utf-8")
     err = (otter_assign_out.stderr).decode("utf-8")
@@ -35,3 +36,5 @@ def assign(a_args, local_notebooks_folder, create_pdfs=False):
     remove_otter_assign_output(assign_path)
     strip_unnecessary_keys(f"{assign_path}/student/{file_name}")
     strip_unnecessary_keys(f"{assign_path}/autograder/{file_name}")
+    add_sequential_ids_to_notebook(f"{assign_path}/student/{file_name}", a_args['file_no_ext'])
+    add_sequential_ids_to_notebook(f"{assign_path}/autograder/{file_name}", a_args['file_no_ext'])

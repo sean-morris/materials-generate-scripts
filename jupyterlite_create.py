@@ -1,7 +1,7 @@
 import json
 import os
 import shutil
-from util import process_ipynb, strip_unnecessary_keys
+from util import process_ipynb, strip_unnecessary_keys, add_sequential_ids_to_notebook
 
 
 def replace_jl_otter_declare(file_path, name):
@@ -40,5 +40,6 @@ def jupyterlite(a_args, local_notebooks_folder):
     ]
     process_ipynb(copy_to_file, insert_headers)
     strip_unnecessary_keys(copy_to_file)
+    add_sequential_ids_to_notebook(copy_to_file, a_args['file_no_ext'])
     replace_jl_otter_declare(copy_to_file, file_name)
     print(f"JupyterLite: {copy_to}/ Created")

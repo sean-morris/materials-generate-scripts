@@ -1,6 +1,7 @@
 import os
 import json
 import shutil
+import nbformat
 
 
 def get_path_to_notebook(note):
@@ -106,3 +107,44 @@ def process_ipynb(file_path, insert_headers):
                 json_object = json.dumps(data, indent=1)
                 with open(file_path, "w") as outfile:
                     outfile.write(json_object)
+
+
+def add_sequential_ids_to_notebook(notebook_path, file_name_no_ext):
+    # Load the notebook
+    with open(notebook_path, 'r', encoding='utf-8') as f:
+        nb = nbformat.read(f, as_version=4)
+
+    # Iterate over the cells and add a sequential ID if it doesn't have one
+    id_counter = 0
+    for cell in nb.cells:
+        cell['id'] = f"cell-{file_name_no_ext}-{id_counter}"
+        id_counter += 1
+
+    # Save the notebook with the new IDs
+    with open(f"{notebook_path}", 'w', encoding='utf-8') as f:
+        nbformat.write(nb, f)
+
+
+def colab_first_cell(args, root_path, file, header_file, local_notebooks_folder):
+    otter_version = args["otter_version"]
+    data_8_repo_url = args["data_8_repo_url"]
+    materials_repo = args["colab_materials_repo"]
+    if local_notebooks_folder == "notebooks_no_footprint":
+        materials_repo = f"{materials_repo}-no-footprint"
+
+    file_path = os.path.join(root_path, file)
+    rel_path = "/".join(file_path.split("/")[7:-2])
+    if "lectures" in file_path:
+        rel_path = "lectures"
+    insert_headers = []
+    clone_repo_path = f"{data_8_repo_url}/{materials_repo}"
+    notebook_path = f"{materials_repo}/{rel_path}"
+
+    with open(header_file, "r") as f:
+        for line in f:
+            line = line.replace("||OTTER_GRADER_VERSION||", otter_version)
+            line = line.replace("||CLONE_REPO_PATH||", clone_repo_path)
+            line = line.replace("||ORIGINAL_MATERIALS_REPO||", f"{materials_repo}")
+            line = line.replace("||NOTEBOOK_DIR||", notebook_path)
+            insert_headers.append(line)
+    process_ipynb(file_path, insert_headers)

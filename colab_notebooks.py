@@ -1,7 +1,7 @@
 import os
 import json
 from subprocess import run
-from util import process_ipynb, remove_otter_assign_output, strip_unnecessary_keys, setup_assign_dir
+from util import process_ipynb, remove_otter_assign_output, strip_unnecessary_keys, setup_assign_dir, add_sequential_ids_to_notebook, colab_first_cell
 import modify_notebooks_file_access as mn
 
 
@@ -47,31 +47,6 @@ def assign(a_args, root_path, file, pdfs, footprint, run_otter_tests):
             f.write(err)
 
 
-def colab_first_cell(args, root_path, file, header_file, local_notebooks_folder):
-    otter_version = args["otter_version"]
-    data_8_repo_url = args["data_8_repo_url"]
-    materials_repo = args["colab_materials_repo"]
-    if local_notebooks_folder == "notebooks_no_footprint":
-        materials_repo = f"{materials_repo}-no-footprint"
-
-    file_path = os.path.join(root_path, file)
-    rel_path = "/".join(file_path.split("/")[7:-2])
-    if "lectures" in file_path:
-        rel_path = "lectures"
-    insert_headers = []
-    clone_repo_path = f"{data_8_repo_url}/{materials_repo}"
-    notebook_path = f"{materials_repo}/{rel_path}"
-
-    with open(header_file, "r") as f:
-        for line in f:
-            line = line.replace("||OTTER_GRADER_VERSION||", otter_version)
-            line = line.replace("||CLONE_REPO_PATH||", clone_repo_path)
-            line = line.replace("||ORIGINAL_MATERIALS_REPO||", f"{materials_repo}")
-            line = line.replace("||NOTEBOOK_DIR||", notebook_path)
-            insert_headers.append(line)
-    process_ipynb(file_path, insert_headers)
-
-
 def colab_assign_for_file(a_args, local_notebooks_folder):
     assign_path = f"{os.getcwd()}/{local_notebooks_folder}_colab/{a_args['assign_type']}/{a_args['file_no_ext']}"
     file_name = f"{a_args['file_no_ext']}.ipynb"
@@ -79,11 +54,15 @@ def colab_assign_for_file(a_args, local_notebooks_folder):
     if "no_footprint" in local_notebooks_folder:
         mn.provide_url_in_notebook(a_args, f"{local_notebooks_folder}_colab")
     change_colab_assignment_config(assign_path, file_name)  # adds runs_on
+    add_sequential_ids_to_notebook(f"{assign_path}/{file_name}", {a_args['file_no_ext']})
     assign(a_args, assign_path, file_name, a_args["create_pdfs"], local_notebooks_folder, a_args["run_otter_tests"])
     colab_first_cell(a_args, f"{assign_path}/student", file_name, "colab-header.txt", local_notebooks_folder)
     colab_first_cell(a_args, f"{assign_path}/autograder", file_name, "colab-header.txt", local_notebooks_folder)
     remove_otter_assign_output(assign_path)
     strip_unnecessary_keys(f"{assign_path}/student/{file_name}")
+    strip_unnecessary_keys(f"{assign_path}/autograder/{file_name}")
+    add_sequential_ids_to_notebook(f"{assign_path}/student/{file_name}", a_args['file_no_ext'])
+    add_sequential_ids_to_notebook(f"{assign_path}/autograder/{file_name}", a_args['file_no_ext'])
 
 
 def colab_handle_lectures(a_args, local_nb_folder):
