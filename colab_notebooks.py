@@ -1,7 +1,8 @@
 import os
 import json
 from subprocess import run
-from util import process_ipynb, remove_otter_assign_output, strip_unnecessary_keys, setup_assign_dir, add_sequential_ids_to_notebook, colab_first_cell
+from util import remove_otter_assign_output, strip_unnecessary_keys, setup_assign_dir
+from util import add_sequential_ids_to_notebook, colab_first_cell
 import modify_notebooks_file_access as mn
 
 

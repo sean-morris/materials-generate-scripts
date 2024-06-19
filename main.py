@@ -126,7 +126,10 @@ def handle_non_otter_lectures(file_no_ext):
                     util.process_ipynb(f"{jl_path}/{file_no_ext}.ipynb", insert_headers)
                     util.add_sequential_ids_to_notebook(f"{jl_path}/{file_no_ext}.ipynb", file_no_ext)
 
-                    util.colab_first_cell(assign_args, colab_path, f"{file_no_ext}.ipynb", "colab-header.txt", local_notebooks_folder)
+                    util.colab_first_cell(assign_args,
+                                          colab_path, f"{file_no_ext}.ipynb",
+                                          "colab-header.txt",
+                                          local_notebooks_folder)
                     util.add_sequential_ids_to_notebook(f"{colab_path}/{file_no_ext}.ipynb", file_no_ext)
                     cr.copy_assets(assign_args["assign_type"], file_no_ext, False, False)
                 elif "ipynb" not in file:
@@ -210,7 +213,11 @@ def handle_non_otter_reference(file_no_ext):
         util.process_ipynb(f"{jl_path}/{file_no_ext}.ipynb", insert_headers)
         util.add_sequential_ids_to_notebook(f"{jl_path}/{file_no_ext}.ipynb", file_no_ext)
 
-        util.colab_first_cell(assign_args, colab_path, f"{file_no_ext}.ipynb", "colab-header.txt", local_notebooks_folder)
+        util.colab_first_cell(assign_args,
+                              colab_path,
+                              f"{file_no_ext}.ipynb",
+                              "colab-header.txt",
+                              local_notebooks_folder)
         util.add_sequential_ids_to_notebook(f"{colab_path}/{file_no_ext}.ipynb", file_no_ext)
         cr.copy_assets("reference", file_no_ext, False, False)
 
