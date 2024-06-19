@@ -11,7 +11,7 @@ import modify_notebooks_file_access as mn
 
 reference_notebook = "datascience-to-pandas"
 VERBOSE = False
-OTTER_VERSION = "4.4.1"
+OTTER_VERSION = "5.5.0"
 COLAB_CLONE_REPO = "https://github.com/data-8"
 COLAB_REPO_MATERIALS = "materials-sp22-colab"
 
@@ -45,7 +45,7 @@ def run_assign(assign_type, file_no_ext):
         "notebooks_source": raw_path,
         "assign_type": assign_type,
         "file_no_ext": file_no_ext,
-        "create_pdfs": False,
+        "create_pdfs": True,
         "run_otter_tests": True,
         "otter_version": OTTER_VERSION,
         "data_8_repo_url": COLAB_CLONE_REPO,
@@ -252,4 +252,4 @@ assignments = {
 }
 
 # full file name: hw02.ipynb or leave "" and it will everything in assignments dict above
-run("")
+run("hw03.ipynb")

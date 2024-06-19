@@ -42,7 +42,6 @@ def remove_key(d, key):
 def strip_unnecessary_keys(file_name):
     with open(file_name, 'r') as f:
         data_id = json.load(f)
-        remove_key(data_id, "id")
         remove_key(data_id, "execution")
         remove_key(data_id, "widgets")
         remove_key(data_id, "model_id")

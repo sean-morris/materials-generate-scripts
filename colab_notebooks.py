@@ -54,7 +54,7 @@ def colab_assign_for_file(a_args, local_notebooks_folder):
     if "no_footprint" in local_notebooks_folder:
         mn.provide_url_in_notebook(a_args, f"{local_notebooks_folder}_colab")
     change_colab_assignment_config(assign_path, file_name)  # adds runs_on
-    add_sequential_ids_to_notebook(f"{assign_path}/{file_name}", {a_args['file_no_ext']})
+    add_sequential_ids_to_notebook(f"{assign_path}/{file_name}", a_args['file_no_ext'])
     assign(a_args, assign_path, file_name, a_args["create_pdfs"], local_notebooks_folder, a_args["run_otter_tests"])
     colab_first_cell(a_args, f"{assign_path}/student", file_name, "colab-header.txt", local_notebooks_folder)
     colab_first_cell(a_args, f"{assign_path}/autograder", file_name, "colab-header.txt", local_notebooks_folder)
