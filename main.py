@@ -45,7 +45,7 @@ def run_assign(assign_type, file_no_ext):
         "notebooks_source": raw_path,
         "assign_type": assign_type,
         "file_no_ext": file_no_ext,
-        "create_pdfs": True,
+        "create_pdfs": False,
         "run_otter_tests": True,
         "otter_version": OTTER_VERSION,
         "data_8_repo_url": COLAB_CLONE_REPO,
@@ -74,13 +74,14 @@ def handle_non_otter_lectures(file_no_ext):
         "colab_materials_repo": COLAB_REPO_MATERIALS,
         "assets_url": 'https://ds-modules.github.io/materials-sp22-assets'
     }
-    assets_path = f"{os.getcwd()}/notebooks_assets/lec"
+    lec_folder = assign_args["assign_type"]
+    assets_path = f"{os.getcwd()}/notebooks_assets/{lec_folder}"
     for local_notebooks_folder in ["notebooks", "notebooks_no_footprint"]:
-        raw_path = f"{os.getcwd()}/_notebooks_raw/lec/"
-        notebooks_path = f"{os.getcwd()}/{local_notebooks_folder}/lec"
-        binder_path = f"{os.getcwd()}/{local_notebooks_folder}_binder/lec"
-        jl_path = f"{os.getcwd()}/{local_notebooks_folder}_jupyterlite/lec"
-        colab_path = f"{os.getcwd()}/{local_notebooks_folder}_colab/lec"
+        raw_path = f"{os.getcwd()}/_notebooks_raw/{lec_folder}/"
+        notebooks_path = f"{os.getcwd()}/{local_notebooks_folder}/{lec_folder}"
+        binder_path = f"{os.getcwd()}/{local_notebooks_folder}_binder/{lec_folder}"
+        jl_path = f"{os.getcwd()}/{local_notebooks_folder}_jupyterlite/{lec_folder}"
+        colab_path = f"{os.getcwd()}/{local_notebooks_folder}_colab/{lec_folder}"
         if not os.path.exists(notebooks_path):
             os.makedirs(notebooks_path)
         if not os.path.exists(binder_path):
@@ -259,4 +260,4 @@ assignments = {
 }
 
 # full file name: hw02.ipynb or leave "" and it will everything in assignments dict above
-run("hw03.ipynb")
+run("")
