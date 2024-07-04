@@ -184,10 +184,10 @@ repos = {
     ]
 }
 
-PR_COMMIT_MESSAGE = "Updates: Lecture and References"
+PR_COMMIT_MESSAGE = "Otter 5.5.0 Configured"
 FORKED_REPO_NAME = "sean-morris"
-TAG_NAME = 'otter-4.4.1'
-TAG_MESSAGE = 'otter-4.4.1'
+TAG_NAME = 'otter-5.5.0'
+TAG_MESSAGE = 'otter-5.5.0'
 ROOT_PATH = os.path.dirname(os.getcwd())
 access_tokens = get_tokens("tokens.json")
 
@@ -199,5 +199,5 @@ def main(repo):
                 handle_repo(org, r, PR_COMMIT_MESSAGE)
 
 
-main("materials-sp22-assets")
+main("materials-sp22")
 print("Changes pulled, committed, and pushed successfully.")
