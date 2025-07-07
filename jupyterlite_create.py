@@ -12,10 +12,10 @@ def replace_jl_otter_declare(file_path, name):
             imp = cell["source"]
             for index in range(len(imp)):
                 if "otter.Notebook" in imp[index]:
-                    imp[index] = f"grader = otter.Notebook(\"{name}\", jupyterlite=True)"
+                    imp[index] = f"grader = otter.Notebook(\"{name}\")"
 
                 if inf in imp[index]:
-                    imp[index] = imp[index].replace(inf, "https://ds-modules.github.io/materials-sp22-assets")
+                    imp[index] = imp[index].replace(inf, "https://ds-modules.github.io/materials-fds-assets")
 
         json_object = json.dumps(data, indent=1)
         with open(file_path, "w") as outfile:
@@ -34,7 +34,7 @@ def jupyterlite(a_args, local_notebooks_folder):
 
     insert_headers = [
         "# The pip install can take a minute\n",
-        f"%pip install -q urllib3<2.0 otter-grader=={a_args['otter_version']} datascience ipywidgets\n",
+        f"%pip install -q urllib3<2.0 otter-grader datascience ipywidgets\n",
         "import pyodide_http\n",
         "pyodide_http.patch_all()\n"
     ]

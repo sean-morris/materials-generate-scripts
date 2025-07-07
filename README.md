@@ -15,7 +15,6 @@ You need to study main.py to see the configuration options. There are series of 
 notebook to be run. Notice that the keys correspond to the top-level directories in the _notebooks_raw folder. The list of numbers corresponds the assignment number for each assignment type.
 - reference_notebook: the one assignment in data 8 that does not have a number on it.
 - VERBOSE: If set to True you see the output from otter assign as well as some other pieces
-- OTTER_VERSION: Set to 4.4.1 this is used in colab notebooks
 - COLAB_*: The colab notebooks need special configuration
 
 The `run("")` at the bottom of main.py runs the script. If you pass in a notebook name it will only
@@ -46,7 +45,7 @@ This copies all the assets from the raw folder to the notebooks_assets folder --
 
 
 4) Copy the ./notebooks_assets folder to the publicly available web location: e.g.
-materials-sp22-assets in which I allow live access via GH Pages to the main branch. This must be copied and committed before the next step
+materials-fds-assets in which I allow live access via GH Pages to the main branch. This must be copied and committed before the next step
 
 ## Run colab_notebooks again for no footprint
 5) **Line:** `cn.colab_assign_for_file(assign_args, "notebooks_no_footprint")`
@@ -73,7 +72,7 @@ materials-sp22-assets in which I allow live access via GH Pages to the main bran
 This section describes what is in each folder after all the commands in main.py are executed. From here, you copy the files to appropriate repositories to distribute
 
 * notebooks: Your original set of raw unprocessed notebooks and any external files needed(csv, png, etc) as well as the results of otter assign being run on your notebooks -- each folder has a student and autograder subfolder -- this includes **footprint**
-* notebooks_assets: these should be copied to a space that renders them in a publicly-viewable url; it is what will be used to load external files and images; for example we have materials-sp22-assets in the ds-modules github org
+* notebooks_assets: these should be copied to a space that renders them in a publicly-viewable url; it is what will be used to load external files and images; for example we have materials-fds-assets in the ds-modules github org
 * notebook_binder: binderized student and instructor(autograder folder) notebooks for each assignment **with** footprint
 * notebook_colab: colab-enabled student and instructor(autograder folder) notebooks for each assignment **with** footprint
 * notebook_jupyterlite: jupyterlite-enabled student and instructor(autograder folder) notebooks for each assignment **with** footprint

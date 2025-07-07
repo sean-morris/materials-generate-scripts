@@ -1,0 +1,12 @@
+init_cell: true 
+export_cell: true
+requirements: ../../../assign_requirements.txt
+export_cell:
+    pdf: true
+    force_save: false
+solutions_pdf: true
+template_pdf: true
+generate:
+    points_possible: 100
+    filtering: true
+    pagebreaks: false

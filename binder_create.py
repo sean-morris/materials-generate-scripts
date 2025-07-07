@@ -15,8 +15,8 @@ def binderize(a_args, local_notebooks_folder):
 
     insert_headers = [
         "# The pip install can take a minute\n",
-        f"%pip install -q otter-grader=={a_args['otter_version']}\n",
-        "%pip install -q datascience==0.17.5\n"
+        "%pip install -q otter-grader\n",
+        "%pip install -q datascience\n"
     ]
     process_ipynb(copy_to_file, insert_headers)
     strip_unnecessary_keys(copy_to_file)

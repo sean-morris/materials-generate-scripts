@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+import argparse
 import binder_create as bc
 import colab_notebooks as cn
 import copy_to_assets as ca
@@ -11,9 +13,8 @@ import modify_notebooks_file_access as mn
 
 reference_notebook = "datascience-to-pandas"
 VERBOSE = False
-OTTER_VERSION = "5.5.0"
 COLAB_CLONE_REPO = "https://github.com/data-8"
-COLAB_REPO_MATERIALS = "materials-sp22-colab"
+COLAB_REPO_MATERIALS = "materials-fds-colab"
 
 
 def setup(assign_type, file_no_ext):
@@ -47,10 +48,9 @@ def run_assign(assign_type, file_no_ext):
         "file_no_ext": file_no_ext,
         "create_pdfs": False,
         "run_otter_tests": True,
-        "otter_version": OTTER_VERSION,
         "data_8_repo_url": COLAB_CLONE_REPO,
         "colab_materials_repo": COLAB_REPO_MATERIALS,
-        "assets_url": 'https://ds-modules.github.io/materials-sp22-assets'
+        "assets_url": 'https://ds-modules.github.io/materials-fds-assets'
     }
     cn.colab_assign_for_file(assign_args, "notebooks")
     ca.copy_files_assets_repo(assign_args)
@@ -69,10 +69,9 @@ def handle_non_otter_lectures(file_no_ext):
         "verbose": VERBOSE,
         "assign_type": "lec",
         "file_no_ext": file_no_ext,
-        "otter_version": OTTER_VERSION,
         "data_8_repo_url": COLAB_CLONE_REPO,
         "colab_materials_repo": COLAB_REPO_MATERIALS,
-        "assets_url": 'https://ds-modules.github.io/materials-sp22-assets'
+        "assets_url": 'https://ds-modules.github.io/materials-fds-assets'
     }
     lec_folder = assign_args["assign_type"]
     assets_path = f"{os.getcwd()}/notebooks_assets/{lec_folder}"
@@ -111,7 +110,7 @@ def handle_non_otter_lectures(file_no_ext):
 
                     insert_headers = [
                         "# The pip install can take a minute\n",
-                        "%pip install -q datascience==0.17.5\n"
+                        "%pip install -q datascience\n"
                     ]
                     util.process_ipynb(f"{binder_path}/{file_no_ext}.ipynb", insert_headers)
                     util.strip_unnecessary_keys(f"{binder_path}/{file_no_ext}.ipynb")
@@ -148,10 +147,9 @@ def handle_non_otter_reference(file_no_ext):
         "verbose": VERBOSE,
         "assign_type": "reference",
         "file_no_ext": file_no_ext,
-        "otter_version": OTTER_VERSION,
         "data_8_repo_url": COLAB_CLONE_REPO,
         "colab_materials_repo": COLAB_REPO_MATERIALS,
-        "assets_url": 'https://ds-modules.github.io/materials-sp22-assets'
+        "assets_url": 'https://ds-modules.github.io/materials-fds-assets'
     }
     assets_path = f"{os.getcwd()}/notebooks_assets/reference/{file_no_ext}"
     for local_notebooks_folder in ["notebooks", "notebooks_no_footprint"]:
@@ -198,7 +196,7 @@ def handle_non_otter_reference(file_no_ext):
 
         insert_headers = [
             "# The pip install can take a minute\n",
-            "%pip install -q datascience==0.17.5\n"
+            "%pip install -q datascience\n"
         ]
         util.process_ipynb(f"{binder_path}/{file_no_ext}.ipynb", insert_headers)
         util.strip_unnecessary_keys(f"{binder_path}/{file_no_ext}.ipynb")
@@ -259,5 +257,19 @@ assignments = {
     "reference": ["datascience-to-pandas"]
 }
 
-# full file name: hw02.ipynb or leave "" and it will everything in assignments dict above
-run("")
+
+def main():
+    parser = argparse.ArgumentParser(description="Process assignment argument.")
+    parser.add_argument('assignment', type=str, help='Assignment name or number (e.g. hw01, all)')
+    args = parser.parse_args()
+
+    print(f"Processing assignment: {args.assignment}")
+    if args.assignment == "all":
+        run("")
+    else:
+        run(f"{args.assignment}.ipynb")
+
+
+if __name__ == "__main__":
+    main()
+

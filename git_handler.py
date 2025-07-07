@@ -169,18 +169,18 @@ def handle_repo(org, r, pr_name):
 
 repos = {
     "data-8": [
-            "materials-sp22-private",
-            "materials-sp22",
-            "materials-sp22-colab",
-            "materials-sp22-binder",
-            "materials-sp22-jupyterlite",
-            "materials-sp22-no-footprint",
-            "materials-sp22-colab-no-footprint",
-            "materials-sp22-binder-no-footprint",
-            "materials-sp22-jupyterlite-no-footprint"
+            "materials-fds-private",
+            "materials-fds",
+            "materials-fds-colab",
+            "materials-fds-binder",
+            "materials-fds-jupyterlite",
+            "materials-fds-no-footprint",
+            "materials-fds-colab-no-footprint",
+            "materials-fds-binder-no-footprint",
+            "materials-fds-jupyterlite-no-footprint"
     ],
     "ds-modules": [
-            "materials-sp22-assets"
+            "materials-fds-assets"
     ]
 }
 
@@ -199,5 +199,5 @@ def main(repo):
                 handle_repo(org, r, PR_COMMIT_MESSAGE)
 
 
-main("materials-sp22")
+main("materials-fds")
 print("Changes pulled, committed, and pushed successfully.")

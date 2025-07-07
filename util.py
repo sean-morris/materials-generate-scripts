@@ -125,7 +125,6 @@ def add_sequential_ids_to_notebook(notebook_path, file_name_no_ext):
 
 
 def colab_first_cell(args, root_path, file, header_file, local_notebooks_folder):
-    otter_version = args["otter_version"]
     data_8_repo_url = args["data_8_repo_url"]
     materials_repo = args["colab_materials_repo"]
     if local_notebooks_folder == "notebooks_no_footprint":
@@ -141,7 +140,6 @@ def colab_first_cell(args, root_path, file, header_file, local_notebooks_folder)
 
     with open(header_file, "r") as f:
         for line in f:
-            line = line.replace("||OTTER_GRADER_VERSION||", otter_version)
             line = line.replace("||CLONE_REPO_PATH||", clone_repo_path)
             line = line.replace("||ORIGINAL_MATERIALS_REPO||", f"{materials_repo}")
             line = line.replace("||NOTEBOOK_DIR||", notebook_path)

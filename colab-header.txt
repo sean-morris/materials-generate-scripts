@@ -1,8 +1,8 @@
 from google.colab import drive
 drive.mount('/content/gdrive', force_remount=True)
 
-!mkdir -p '/content/gdrive/My Drive/colab-materials-data8-notebooks/'
-!git clone ||CLONE_REPO_PATH|| '/content/gdrive/My Drive/colab-materials-data8-notebooks/||ORIGINAL_MATERIALS_REPO||/'
+target_dir = '/content/gdrive/My Drive/colab-materials-data8-notebooks/||ORIGINAL_MATERIALS_REPO||/'
+!test -d "$target_dir" || (mkdir -p "$(dirname "$target_dir")" && git clone https://github.com/data-8/||ORIGINAL_MATERIALS_REPO|| "$target_dir")
 
-%pip install otter-grader==||OTTER_GRADER_VERSION||
+%pip install otter-grader
 %cd /content/gdrive/MyDrive/colab-materials-data8-notebooks/||NOTEBOOK_DIR||/

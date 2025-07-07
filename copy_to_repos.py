@@ -3,8 +3,8 @@ import glob
 import os
 import fnmatch
 
-PARENT_PARTIAL = "materials-sp22"
-ROOT_PATH = "/Users/sean/Documents/cb"
+PARENT_PARTIAL = "materials-fds"
+ROOT_PATH = "/Users/sean/Documents/data-8"
 
 
 def delete_and_copy(src, dest, delete_first):
@@ -29,60 +29,70 @@ def copy_assets(assign_type, file_no_ext, copy_autograder, copy_pdfs):
         rel_path = f"{assign_type}"
         student_path = ""
 
-    # copy notebooks_assets to materials-sp22-assets
+    # copy notebooks_assets to materials-fds-assets
     src = f"notebooks_assets/{src_rel_path}"
     dest = f"{ROOT_PATH}/{PARENT_PARTIAL}-assets/{src_rel_path}"
     if os.path.exists(src):
         delete_and_copy(src, dest, delete_first)
 
-    # copy notebooks/assign/student to materials-sp22
+    # copy notebooks/assign/student to materials-fds
     src = f"notebooks/{src_rel_path}/{student_path}"
     dest = f"{ROOT_PATH}/{PARENT_PARTIAL}/{rel_path}"
     delete_and_copy(src, dest, delete_first)
 
-    # copy notebooks_no_footprint to materials-sp22-no-footprint
+    # copy notebooks_no_footprint to materials-fds-no-footprint
     src = f"notebooks_no_footprint/{src_rel_path}/{student_path}"
     dest = f"{ROOT_PATH}/{PARENT_PARTIAL}-no-footprint/{rel_path}"
     delete_and_copy(src, dest, delete_first)
 
-    # copy notebooks_colab to materials-sp22-colab
+    # copy notebooks_colab to materials-fds-colab
     src = f"notebooks_colab/{src_rel_path}/{student_path}"
     dest = f"{ROOT_PATH}/{PARENT_PARTIAL}-colab/{rel_path}"
     delete_and_copy(src, dest, delete_first)
 
-    # copy notebooks_no_footprint_colab to materials-sp22-colab-no-footprint
+    # copy notebooks_no_footprint_colab to materials-fds-colab-no-footprint
     src = f"notebooks_no_footprint_colab/{src_rel_path}/{student_path}"
     dest = f"{ROOT_PATH}/{PARENT_PARTIAL}-colab-no-footprint/{rel_path}"
     delete_and_copy(src, dest, delete_first)
 
-    # copy notebooks_binder to materials-sp22-binder
+    # copy notebooks_binder to materials-fds-binder
     src = f"notebooks_binder/{src_rel_path}"
     dest = f"{ROOT_PATH}/{PARENT_PARTIAL}-binder/{rel_path}"
     delete_and_copy(src, dest, delete_first)
 
-    # copy notebooks_no_footprint_binder to materials-sp22-binder-no-footprint
+    # copy notebooks_no_footprint_binder to materials-fds-binder-no-footprint
     src = f"notebooks_no_footprint_binder/{src_rel_path}"
     dest = f"{ROOT_PATH}/{PARENT_PARTIAL}-binder-no-footprint/{rel_path}"
     delete_and_copy(src, dest, delete_first)
 
-    # copy notebooks_jupyterlite to materials-sp22-jupyterlite
+    # copy notebooks_jupyterlite to materials-fds-jupyterlite
     src = f"notebooks_jupyterlite/{src_rel_path}"
     dest = f"{ROOT_PATH}/{PARENT_PARTIAL}-jupyterlite/{rel_path}"
     delete_and_copy(src, dest, delete_first)
 
-    # copy notebooks_no_footprint_jupyterlite to materials-sp22-jupyterlite-no-footprint
+    # copy notebooks_no_footprint_jupyterlite to materials-fds-jupyterlite-no-footprint
     src = f"notebooks_no_footprint_jupyterlite/{src_rel_path}"
     dest = f"{ROOT_PATH}/{PARENT_PARTIAL}-jupyterlite-no-footprint/{rel_path}"
     delete_and_copy(src, dest, delete_first)
 
-    # copy notebooks/assign/autograder to materials-sp22-private
+    # copy notebooks/assign/autograder to materials-fds-private
     # copy autograder.zip
     if copy_autograder:
         src_pattern = f"notebooks/{src_rel_path}/autograder/*.zip"
-        dest = f"{ROOT_PATH}/{PARENT_PARTIAL}-private/autograder_zips/{rel_path}/autograder.zip"
+        dest = f"{ROOT_PATH}/{PARENT_PARTIAL}-private/autograder_zips/{rel_path}"
         file_to_copy = glob.glob(src_pattern)
         if os.path.exists(dest):
-            os.remove(dest)
+            zip_files = glob.glob(os.path.join(dest, "*.zip"))
+            if not zip_files:
+                print(f"No .zip files found in {dest}")
+            else:
+                print(f"Found .zip files to delete in {dest}:")
+                for file_path in zip_files:
+                    try:
+                        os.remove(file_path)
+                    except OSError as e:
+                        print(f"  Error deleting {file_path}: {e}")
+
         for file_path in file_to_copy:
             shutil.copy(file_path, dest)
 
