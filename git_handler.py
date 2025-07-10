@@ -73,9 +73,9 @@ def handle_local_repo(repo, repo_path):
     # Add files to the staging area
     repo.git.add(A=True)
 
-    com_msg = 'materials-generate-scripts update lectures and reference'
+    com_msg = 'materials-generate-scripts update materials with otter 6.1.3 configuration'
     # Commit the changes
-    if repo.head.commit:
+    if not repo.head.commit:
         print("No changes to commit.")
     else:
         repo.index.commit(com_msg)
@@ -184,10 +184,10 @@ repos = {
     ]
 }
 
-PR_COMMIT_MESSAGE = "Otter 5.5.0 Configured"
+PR_COMMIT_MESSAGE = "Otter 6.1.3 Configured"
 FORKED_REPO_NAME = "sean-morris"
-TAG_NAME = 'otter-5.5.0'
-TAG_MESSAGE = 'otter-5.5.0'
+TAG_NAME = 'otter-6.1.3'
+TAG_MESSAGE = 'otter-6.1.3'
 ROOT_PATH = os.path.dirname(os.getcwd())
 access_tokens = get_tokens("tokens.json")
 
@@ -199,5 +199,5 @@ def main(repo):
                 handle_repo(org, r, PR_COMMIT_MESSAGE)
 
 
-main("materials-fds")
+main(None) # Pass None to handle all repositories
 print("Changes pulled, committed, and pushed successfully.")

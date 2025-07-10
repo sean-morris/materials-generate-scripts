@@ -1,9 +1,10 @@
 init_cell: true 
-export_cell: true
 requirements: ../../../assign_requirements.txt
+check_all_cell: true
 export_cell:
     pdf: true
     force_save: false
+    run_tests: false
 solutions_pdf: true
 template_pdf: true
 generate:

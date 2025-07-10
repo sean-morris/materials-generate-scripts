@@ -1,4 +1,5 @@
 datascience
+matplotlib
 otter-grader
 GitPython
 PyGithub
